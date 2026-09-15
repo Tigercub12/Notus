@@ -6,8 +6,4 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "DB"
 database_name = "notus_db"
-database_id = "5b891d68-efe8-4b40-8dd8-8f3d8d4ef710"
-
-[[r2_buckets]]
-binding = "R2_BUCKET"
-bucket_name = "notus-uploads"
+database_id = "8728ed98-e71e-4501-a1e4-a1db4b150993"
