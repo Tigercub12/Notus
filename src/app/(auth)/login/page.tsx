@@ -142,5 +142,3 @@ export default function AuthPage() {
     </div>
   );
 }
-
-export const runtime = 'edge';
