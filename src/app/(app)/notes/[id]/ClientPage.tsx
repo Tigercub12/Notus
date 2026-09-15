@@ -147,7 +147,7 @@ export default function NoteEditorPage() {
       .finally(() => setIsLoading(false));
 
     // Load tags
-    fetch(`/api/notes/${params.id}/tags`)
+    fetch(`/api/tags?noteId=${params.id}`)
       .then(async res => res.ok ? (await res.json()) as any : [])
       .then(data => setTags(data || []))
       .catch(err => console.error('Failed to load tags', err));
@@ -163,7 +163,7 @@ export default function NoteEditorPage() {
     if (e.key === 'Enter' && tagInput.trim()) {
       e.preventDefault();
       try {
-        const res = await fetch(`/api/notes/${params.id}/tags`, {
+        const res = await fetch(`/api/tags?noteId=${params.id}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: tagInput })
@@ -181,7 +181,7 @@ export default function NoteEditorPage() {
 
   const removeTag = async (tagId: string) => {
     try {
-      await fetch(`/api/notes/${params.id}/tags?tagId=${tagId}`, { method: 'DELETE' });
+      await fetch(`/api/tags?noteId=${params.id}&id=${tagId}`, { method: 'DELETE' });
       setTags(prev => prev.filter(t => t.id !== tagId));
     } catch (err) {
       console.error('Failed to remove tag', err);
