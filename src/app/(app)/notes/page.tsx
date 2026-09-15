@@ -51,6 +51,20 @@ export default function NotesPage() {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
+  const handleNewNote = async () => {
+    try {
+      const res = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: '', content: '' })
+      });
+      if (res.ok) {
+        const note = await res.json();
+        router.push(`/notes/${note.id}`);
+      }
+    } catch (e) {}
+  };
+
   const handleDelete = async (id: string, e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -168,9 +182,9 @@ export default function NotesPage() {
       {/* Mobile Header */}
       <header className="md:hidden bg-[#f8f9ff] border-b border-[#c4c5d5] h-14 flex items-center justify-between px-4 sticky top-0 z-20">
         <h1 className="text-xl font-semibold text-[#0b1c30]">บันทึก</h1>
-        <Link href="/notes/new" className="p-2 text-[#00288e] hover:bg-[#e5eeff] rounded-full">
+        <button onClick={handleNewNote} className="p-2 text-[#00288e] hover:bg-[#e5eeff] rounded-full">
           <span className="material-symbols-outlined">add</span>
-        </Link>
+        </button>
       </header>
 
       {/* Desktop Header */}
@@ -187,10 +201,10 @@ export default function NotesPage() {
               className="pl-10 pr-4 py-2 w-64 bg-[#f8f9ff] rounded-full border-none focus:ring-2 focus:ring-[#00288e] text-sm text-[#0b1c30] placeholder:text-[#444653]"
             />
           </div>
-          <Link href="/notes/new" className="flex items-center gap-2 bg-[#1e40af] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#00288e] transition-colors">
+          <button onClick={handleNewNote} className="flex items-center gap-2 bg-[#1e40af] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#00288e] transition-colors">
             <span className="material-symbols-outlined text-[18px]">add</span>
             สร้างบันทึก
-          </Link>
+          </button>
         </div>
       </header>
 
@@ -246,10 +260,10 @@ export default function NotesPage() {
           <div className="text-center py-16">
             <span className="material-symbols-outlined text-[48px] text-[#c4c5d5] mb-4">note_stack</span>
             <p className="text-sm text-[#444653] mb-4">ไม่พบบันทึก</p>
-            <Link href="/notes/new" className="inline-flex items-center gap-2 bg-[#1e40af] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#00288e] transition-colors">
+            <button onClick={handleNewNote} className="inline-flex items-center gap-2 bg-[#1e40af] text-white px-4 py-2 rounded-lg text-xs font-medium hover:bg-[#00288e] transition-colors">
               <span className="material-symbols-outlined text-[18px]">add</span>
-              สร้างบันทึกแรก
-            </Link>
+              สร้างบันทึกแรกของคุณ
+            </button>
           </div>
         )}
       </div>

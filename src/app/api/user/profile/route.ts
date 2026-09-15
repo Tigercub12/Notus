@@ -57,4 +57,47 @@ export async function PATCH(req: NextRequest) {
   }
 }
 
+export async function POST(request: NextRequest) {
+  try {
+    const { hashPassword } = await import('@/lib/auth/password');
+    const { registerSchema } = await import('@/lib/validators/auth');
+    const body = await request.json();
+    const parsed = registerSchema.safeParse(body);
+
+    if (!parsed.success) {
+      return NextResponse.json(
+        { error: parsed.error.issues[0].message },
+        { status: 400 }
+      );
+    }
+
+    const { email, password, full_name } = parsed.data;
+    const db = getDb();
+
+    // Check if user exists
+    const existing = await db.select().from(users).where(eq(users.email, email)).get();
+    if (existing) {
+      return NextResponse.json({ error: 'อีเมลนี้ถูกใช้งานแล้ว' }, { status: 409 });
+    }
+
+    // Create user
+    const userId = crypto.randomUUID();
+    const passwordHash = await hashPassword(password);
+
+    await db.insert(users).values({
+      id: userId,
+      email,
+      password_hash: passwordHash,
+      full_name: full_name || null,
+    });
+
+    return NextResponse.json({
+      user: { id: userId, email, full_name },
+    }, { status: 201 });
+  } catch (error) {
+    console.error('Register Error:', error);
+    return NextResponse.json({ error: 'เกิดข้อผิดพลาดในการลงทะเบียน' }, { status: 500 });
+  }
+}
+
 export const runtime = 'edge';

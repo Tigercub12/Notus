@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
-export default function LoginPage() {
+export default function AuthPage() {
   const router = useRouter();
+  const [isRegister, setIsRegister] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -17,20 +18,31 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
+      if (isRegister) {
+        const res = await fetch('/api/user/profile', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, full_name: fullName }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setError(data.error || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
+          setLoading(false);
+          return;
+        }
+      }
+
       const res = await signIn('credentials', {
         email,
         password,
         redirect: false,
       });
       if (res?.error) {
-        if (res.error === 'CredentialsSignin') {
-          setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
-        } else {
-          setError(res.error);
-        }
+        if (res.error === 'CredentialsSignin') setError('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+        else setError(res.error);
       } else {
         router.push('/dashboard');
-        router.refresh(); // Refresh to update layout state
+        router.refresh();
       }
     } catch (err) {
       setError('เกิดข้อผิดพลาดไม่ทราบสาเหตุ');
@@ -42,16 +54,14 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen geometric-bg flex items-center justify-center p-4">
       <div className="w-full max-w-md p-6 bg-white border border-[#c4c5d5] rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-        {/* Brand Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center gap-1 mb-2">
             <span className="material-symbols-outlined text-[#00288e] text-[32px]">note_stack</span>
             <h1 className="text-xl font-semibold text-[#0b1c30]">Notus</h1>
           </div>
-          <p className="text-sm text-[#444653]">เข้าสู่ระบบพื้นที่ทำงานของคุณ</p>
+          <p className="text-sm text-[#444653]">{isRegister ? 'สร้างบัญชีพื้นที่ทำงานใหม่' : 'เข้าสู่ระบบพื้นที่ทำงานของคุณ'}</p>
         </div>
 
-        {/* Google Login */}
         <button 
           type="button"
           onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
@@ -63,30 +73,34 @@ export default function LoginPage() {
             <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
             <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
           </svg>
-          <span className="text-xs font-medium tracking-[0.05em] text-[#0b1c30]">เข้าสู่ระบบด้วย Google</span>
+          <span className="text-xs font-medium tracking-[0.05em] text-[#0b1c30]">ดำเนินการต่อด้วย Google</span>
         </button>
 
-        {/* Divider */}
         <div className="flex items-center mb-6">
           <div className="flex-grow border-t border-[#c4c5d5]"></div>
           <span className="px-4 text-xs font-medium tracking-[0.05em] text-[#444653]">หรือดำเนินการต่อด้วยอีเมล</span>
           <div className="flex-grow border-t border-[#c4c5d5]"></div>
         </div>
 
-        {/* Error message */}
-        {error && (
-          <div className="mb-4 p-3 bg-[#ffdad6] text-[#93000a] text-sm rounded">
-            {error}
-          </div>
-        )}
+        {error && <div className="mb-4 p-3 bg-[#ffdad6] text-[#93000a] text-sm rounded">{error}</div>}
 
-        {/* Login Form */}
         <form onSubmit={handleSubmit}>
+          {isRegister && (
+            <div className="mb-4">
+              <label className="block text-xs font-medium tracking-[0.05em] text-[#0b1c30] mb-1">ชื่อ-นามสกุล (ไม่บังคับ)</label>
+              <input
+                className="w-full bg-transparent border-0 border-b border-[#c4c5d5] focus:border-[#00288e] focus:ring-0 px-0 py-2 text-sm text-[#0b1c30]"
+                placeholder="สมชาย ใจดี"
+                type="text"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+              />
+            </div>
+          )}
           <div className="mb-4">
-            <label className="block text-xs font-medium tracking-[0.05em] text-[#0b1c30] mb-1" htmlFor="email">อีเมล</label>
+            <label className="block text-xs font-medium tracking-[0.05em] text-[#0b1c30] mb-1">อีเมล</label>
             <input
-              className="w-full bg-transparent border-0 border-b border-[#c4c5d5] focus:border-[#00288e] focus:ring-0 px-0 py-2 text-sm text-[#0b1c30] placeholder:text-[#444653] transition-colors"
-              id="email"
+              className="w-full bg-transparent border-0 border-b border-[#c4c5d5] focus:border-[#00288e] focus:ring-0 px-0 py-2 text-sm text-[#0b1c30]"
               placeholder="name@company.com"
               required
               type="email"
@@ -95,13 +109,9 @@ export default function LoginPage() {
             />
           </div>
           <div className="mb-6">
-            <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-medium tracking-[0.05em] text-[#0b1c30]" htmlFor="password">รหัสผ่าน</label>
-              <a className="text-xs font-medium tracking-[0.05em] text-[#00288e] hover:text-[#1e40af] transition-colors" href="#">ลืมรหัสผ่าน?</a>
-            </div>
+            <label className="block text-xs font-medium tracking-[0.05em] text-[#0b1c30] mb-1">รหัสผ่าน</label>
             <input
-              className="w-full bg-transparent border-0 border-b border-[#c4c5d5] focus:border-[#00288e] focus:ring-0 px-0 py-2 text-sm text-[#0b1c30] placeholder:text-[#444653] transition-colors"
-              id="password"
+              className="w-full bg-transparent border-0 border-b border-[#c4c5d5] focus:border-[#00288e] focus:ring-0 px-0 py-2 text-sm text-[#0b1c30]"
               placeholder="••••••••"
               required
               type="password"
@@ -112,19 +122,21 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-[#1e40af] text-white py-2 px-4 rounded text-xs font-medium tracking-[0.05em] hover:bg-[#00288e] transition-colors duration-200 flex items-center justify-center disabled:opacity-50"
+            className="w-full bg-[#1e40af] text-white py-2 px-4 rounded text-xs font-medium tracking-[0.05em] hover:bg-[#00288e] transition-colors flex items-center justify-center disabled:opacity-50"
           >
-            {loading ? (
-              <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
-            ) : (
-              'เข้าสู่ระบบ'
-            )}
+            {loading ? <span className="inline-block w-4 h-4 border-2 border-t-white rounded-full animate-spin"></span> : (isRegister ? 'สมัครสมาชิก' : 'เข้าสู่ระบบ')}
           </button>
         </form>
 
         <div className="mt-6 text-center">
-          <span className="text-sm text-[#444653]">ยังไม่มีบัญชี? </span>
-          <Link className="text-xs font-medium tracking-[0.05em] text-[#00288e] hover:text-[#1e40af] transition-colors" href="/register">สร้างบัญชี</Link>
+          <span className="text-sm text-[#444653]">{isRegister ? 'มีบัญชีอยู่แล้ว? ' : 'ยังไม่มีบัญชี? '}</span>
+          <button 
+            type="button" 
+            onClick={() => { setIsRegister(!isRegister); setError(''); }} 
+            className="text-xs font-medium tracking-[0.05em] text-[#00288e] hover:text-[#1e40af]"
+          >
+            {isRegister ? 'เข้าสู่ระบบ' : 'สร้างบัญชี'}
+          </button>
         </div>
       </div>
     </div>

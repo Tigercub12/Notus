@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
 
 const navLinks = [
@@ -14,10 +14,25 @@ const navLinks = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
   
   const userName = session?.user?.name || session?.user?.email?.split('@')[0] || 'ผู้ใช้';
   const userEmail = session?.user?.email || '';
+
+  const handleNewNote = async () => {
+    try {
+      const res = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: '', content: '' })
+      });
+      if (res.ok) {
+        const note = await res.json();
+        router.push(`/notes/${note.id}`);
+      }
+    } catch (e) {}
+  };
 
   return (
     <nav className="hidden md:flex flex-col h-full w-[280px] bg-[#f8f9ff] border-r border-[#c4c5d5] shrink-0 z-10 fixed left-0 top-0 pb-4">
@@ -29,10 +44,10 @@ export default function Sidebar() {
 
       {/* CTA */}
       <div className="px-4 mb-6">
-        <Link href="/notes/new" className="w-full flex items-center justify-center gap-2 bg-[#1e40af] text-white hover:bg-[#00288e] transition-colors py-3 rounded-xl shadow-sm hover:shadow-md text-xs font-medium tracking-[0.05em]">
+        <button onClick={handleNewNote} className="w-full flex items-center justify-center gap-2 bg-[#1e40af] text-white hover:bg-[#00288e] transition-colors py-3 rounded-xl shadow-sm hover:shadow-md text-xs font-medium tracking-[0.05em]">
           <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>add</span>
           โน้ตใหม่
-        </Link>
+        </button>
       </div>
 
       {/* Nav Links */}

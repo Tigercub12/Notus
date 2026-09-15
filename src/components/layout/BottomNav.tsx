@@ -62,9 +62,9 @@ export default function BottomNav() {
           </Link>
           
           <div className="relative -top-5">
-            <Link href="/notes/new" className="flex items-center justify-center w-14 h-14 bg-[#00288e] text-white rounded-full shadow-[0px_4px_12px_rgba(0,40,142,0.3)] hover:bg-[#1e40af] hover:shadow-[0px_6px_16px_rgba(0,40,142,0.4)] transition-all duration-300 active:scale-95">
+            <button onClick={handleNewNote} className="flex items-center justify-center w-14 h-14 bg-[#00288e] text-white rounded-full shadow-[0px_4px_12px_rgba(0,40,142,0.3)] hover:bg-[#1e40af] hover:shadow-[0px_6px_16px_rgba(0,40,142,0.4)] transition-all duration-300 active:scale-95">
               <span className="material-symbols-outlined text-[28px]">add</span>
-            </Link>
+            </button>
           </div>
           
           <Link href="/calendar" className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${pathname === '/calendar' ? 'text-[#00288e] scale-110' : 'text-[#757684] hover:bg-[#e5eeff] hover:text-[#0b1c30]'}`}>
