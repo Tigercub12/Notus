@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db';
 import { events } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 
-export const runtime = 'edge';
+
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {

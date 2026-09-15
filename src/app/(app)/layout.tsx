@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 import Sidebar from '@/components/layout/Sidebar';
 import BottomNav from '@/components/layout/BottomNav';
 
-export const runtime = 'edge';
+
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const session = await auth();

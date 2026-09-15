@@ -5,7 +5,7 @@ import { hashPassword } from '@/lib/auth/password';
 import { registerSchema } from '@/lib/validators/auth';
 import { eq } from 'drizzle-orm';
 
-export const runtime = 'edge';
+
 
 export async function POST(request: NextRequest) {
   try {

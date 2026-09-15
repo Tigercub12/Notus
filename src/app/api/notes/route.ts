@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db';
 import { notes } from '@/lib/db/schema';
 import { eq, desc, sql } from 'drizzle-orm';
 
-export const runtime = 'edge';
+
 
 export async function GET(req: NextRequest) {
   try {

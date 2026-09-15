@@ -4,7 +4,7 @@ import { getDb } from '@/lib/db';
 import { tags, noteTags, notes } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 
-export const runtime = 'edge';
+
 
 // Get tags for a specific note
 export async function GET(

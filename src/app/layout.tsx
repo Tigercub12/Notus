@@ -11,7 +11,7 @@ const hanken = Hanken_Grotesk({
   variable: '--font-hanken',
 });
 
-export const runtime = 'edge';
+
 
 export const metadata: Metadata = {
   title: 'Notus — Executive Precision',

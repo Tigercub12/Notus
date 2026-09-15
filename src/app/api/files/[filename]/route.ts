@@ -5,7 +5,7 @@ import { attachments, notes } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 import { getRequestContext } from '@cloudflare/next-on-pages';
 
-export const runtime = 'edge';
+
 
 export async function GET(
   req: NextRequest,
