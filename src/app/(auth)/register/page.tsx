@@ -171,3 +171,5 @@ export default function RegisterPage() {
     </div>
   );
 }
+
+export const runtime = 'edge';

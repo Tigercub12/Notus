@@ -110,3 +110,37 @@ export async function POST(
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { id } = await params;
+    const tagId = req.nextUrl.searchParams.get('tagId');
+    if (!tagId) return NextResponse.json({ error: 'Missing tagId' }, { status: 400 });
+
+    const userId = session.user.id;
+    const db = getDb();
+
+    // Verify note ownership
+    const note = await db.select({ id: notes.id }).from(notes).where(and(eq(notes.id, id), eq(notes.user_id, userId))).get();
+    if (!note) {
+      return NextResponse.json({ error: 'Note not found' }, { status: 404 });
+    }
+
+    // Delete relation
+    await db.delete(noteTags).where(and(eq(noteTags.note_id, id), eq(noteTags.tag_id, tagId))).run();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Failed to remove tag from note', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export const runtime = 'edge';

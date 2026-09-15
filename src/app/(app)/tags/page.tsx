@@ -62,7 +62,7 @@ export default function TagsPage() {
   const handleDeleteTag = async (id: string) => {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบแท็กนี้? (หากลบ จะหายไปจากทุกโน้ตที่ติดแท็กนี้)')) return;
     try {
-      const res = await fetch(`/api/tags/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/tags?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         setTags(tags.filter(t => t.id !== id));
       }
@@ -152,3 +152,5 @@ export default function TagsPage() {
     </div>
   );
 }
+
+export const runtime = 'edge';

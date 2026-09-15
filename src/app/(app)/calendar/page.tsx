@@ -394,3 +394,5 @@ export default function CalendarPage() {
     </div>
   );
 }
+
+export const runtime = 'edge';

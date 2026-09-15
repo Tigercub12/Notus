@@ -130,3 +130,5 @@ export default function LoginPage() {
     </div>
   );
 }
+
+export const runtime = 'edge';

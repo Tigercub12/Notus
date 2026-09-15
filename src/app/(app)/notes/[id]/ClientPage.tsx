@@ -39,7 +39,7 @@ export default function NoteEditorPage() {
     if (!params.id) return;
     try {
       if (!isAutoSave) setIsSaving(true);
-      await fetch(`/api/notes/${params.id}`, {
+      await fetch(`/api/notes?id=${params.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -60,7 +60,7 @@ export default function NoteEditorPage() {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบโน้ตนี้?')) return;
     try {
       setIsSaving(true);
-      const res = await fetch(`/api/notes/${params.id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/notes?id=${params.id}`, { method: 'DELETE' });
       if (res.ok) {
         router.push('/notes');
         router.refresh();
@@ -124,7 +124,7 @@ export default function NoteEditorPage() {
   useEffect(() => {
     if (!params.id || !editor) return;
 
-    fetch(`/api/notes/${params.id}`)
+    fetch(`/api/notes?id=${params.id}`)
       .then(async res => {
         if (!res.ok) throw new Error('Not found');
         return (await res.json()) as any;
@@ -181,7 +181,7 @@ export default function NoteEditorPage() {
 
   const removeTag = async (tagId: string) => {
     try {
-      await fetch(`/api/notes/${params.id}/tags/${tagId}`, { method: 'DELETE' });
+      await fetch(`/api/notes/${params.id}/tags?tagId=${tagId}`, { method: 'DELETE' });
       setTags(prev => prev.filter(t => t.id !== tagId));
     } catch (err) {
       console.error('Failed to remove tag', err);

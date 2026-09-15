@@ -76,3 +76,72 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function PATCH(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const eventId = req.nextUrl.searchParams.get('id');
+    if (!eventId) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+    const { title, description, event_date, end_date } = (await req.json()) as any;
+
+    const db = getDb();
+    const userId = session.user.id;
+
+    // Check ownership
+    const existingEvent = await db.select({ id: events.id }).from(events).where(and(eq(events.id, eventId), eq(events.user_id, userId))).get();
+    if (!existingEvent) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+
+    const updateData: Partial<typeof events.$inferInsert> = {};
+    if (title !== undefined) updateData.title = title;
+    if (description !== undefined) updateData.description = description;
+    if (event_date !== undefined) updateData.event_date = event_date;
+    if (end_date !== undefined) updateData.end_date = end_date;
+
+    if (Object.keys(updateData).length > 0) {
+      updateData.updated_at = new Date();
+      await db.update(events)
+        .set(updateData)
+        .where(and(eq(events.id, eventId), eq(events.user_id, userId)))
+        .run();
+    }
+
+    const updatedEvent = await db.select().from(events).where(eq(events.id, eventId)).get();
+    return NextResponse.json(updatedEvent);
+  } catch (error) {
+    console.error('Failed to update event', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const eventId = req.nextUrl.searchParams.get('id');
+    if (!eventId) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+    const db = getDb();
+    const userId = session.user.id;
+
+    const existingEvent = await db.select({ id: events.id }).from(events).where(and(eq(events.id, eventId), eq(events.user_id, userId))).get();
+    if (!existingEvent) {
+      return NextResponse.json({ error: 'Event not found' }, { status: 404 });
+    }
+
+    await db.delete(events).where(and(eq(events.id, eventId), eq(events.user_id, userId))).run();
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Failed to delete event', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+export const runtime = 'edge';

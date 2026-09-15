@@ -21,7 +21,7 @@ export default function CanvasPage() {
   // Load existing canvas data
   useEffect(() => {
     if (!params.noteId) return;
-    fetch(`/api/notes/${params.noteId}`)
+    fetch(`/api/notes?id=${params.noteId}`)
       .then(res => res.json())
       .then((data: any) => {
         if (data && data.canvas_image_url) {
@@ -49,7 +49,7 @@ export default function CanvasPage() {
       const files = excalidrawAPI.getFiles();
       const canvasData = JSON.stringify({ elements, files });
       
-      await fetch(`/api/notes/${params.noteId}`, {
+      await fetch(`/api/notes?id=${params.noteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

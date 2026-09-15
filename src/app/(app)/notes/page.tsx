@@ -58,12 +58,14 @@ export default function NotesPage() {
     if (!confirm('คุณแน่ใจหรือไม่ว่าต้องการลบโน้ตนี้?')) return;
     
     try {
-      const res = await fetch(`/api/notes/${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/notes?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         setNotes(notes.filter(n => n.id !== id));
+      } else {
+        alert('เกิดข้อผิดพลาดในการลบโน้ต');
       }
     } catch (err) {
-      console.error(err);
+      console.error('Failed to delete note:', err);
     }
   };
 
@@ -74,7 +76,7 @@ export default function NotesPage() {
     
     try {
       const newPinStatus = note.is_pinned === 1 ? 0 : 1;
-      const res = await fetch(`/api/notes/${note.id}`, {
+      const res = await fetch(`/api/notes?id=${note.id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ is_pinned: newPinStatus })
@@ -254,3 +256,5 @@ export default function NotesPage() {
     </div>
   );
 }
+
+export const runtime = 'edge';

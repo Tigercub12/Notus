@@ -7,3 +7,5 @@ const ClientPage = dynamic(() => import('./ClientPage'), { ssr: false });
 export default function NewNotePage() {
   return <ClientPage />;
 }
+
+export const runtime = 'edge';
