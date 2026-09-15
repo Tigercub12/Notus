@@ -7,8 +7,6 @@ import { eq } from "drizzle-orm";
 import { verifyPassword } from "@/lib/auth/password";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  secret: process.env.AUTH_SECRET,
-  trustHost: true,
   providers: [
     ...(process.env.GOOGLE_CLIENT_ID && !process.env.GOOGLE_CLIENT_ID.includes('dummy') 
       ? [GoogleProvider({
