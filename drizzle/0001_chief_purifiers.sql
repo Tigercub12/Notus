@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `tags_user_name_unique` ON `tags` (`user_id`,`name`);

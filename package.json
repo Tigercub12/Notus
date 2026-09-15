@@ -1,0 +1,48 @@
+{
+  "name": "notus-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "preview": "npm run pages:build && wrangler pages dev .vercel/output/static --compatibility-date=2024-03-04",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "wrangler d1 migrations apply notus_db --local",
+    "db:fts:local": "wrangler d1 execute notus_db --local --file=scripts/setup-fts.sql"
+  },
+  "dependencies": {
+    "@excalidraw/excalidraw": "^0.18.1",
+    "@tiptap/extension-image": "^3.29.2",
+    "@tiptap/extension-link": "^3.29.2",
+    "@tiptap/extension-underline": "^3.29.2",
+    "@tiptap/react": "^3.29.2",
+    "@tiptap/starter-kit": "^3.29.2",
+    "date-fns": "^4.4.0",
+    "drizzle-orm": "^0.45.2",
+    "next": "16.2.12",
+    "next-auth": "5.0.0-beta.25",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.13.16",
+    "@cloudflare/workers-types": "^4.20240304.0",
+    "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.20",
+    "@tiptap/extension-placeholder": "^3.29.2",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.12",
+    "eslint-plugin-next-on-pages": "^1.13.16",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "wrangler": "^4.131.2"
+  }
+}
