@@ -34,5 +34,3 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
-export const runtime = 'edge';

@@ -240,5 +240,3 @@ export default function FilesPage() {
     </div>
   );
 }
-
-export const runtime = 'edge';

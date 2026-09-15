@@ -270,5 +270,3 @@ export default function NotesPage() {
     </div>
   );
 }
-
-export const runtime = 'edge';
