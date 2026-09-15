@@ -8,7 +8,7 @@ import { verifyPassword } from "@/lib/auth/password";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
-    ...(process.env.GOOGLE_CLIENT_ID && !process.env.GOOGLE_CLIENT_ID.includes('dummy') 
+    ...(typeof process !== 'undefined' && process.env.GOOGLE_CLIENT_ID && !process.env.GOOGLE_CLIENT_ID.includes('dummy') 
       ? [GoogleProvider({
           clientId: process.env.GOOGLE_CLIENT_ID,
           clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
@@ -93,6 +93,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/login',
   },
-  secret: process.env.AUTH_SECRET,
+  secret: typeof process !== 'undefined' ? process.env.AUTH_SECRET : "dummy_secret_for_build",
   trustHost: true,
 });

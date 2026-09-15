@@ -11,8 +11,6 @@ const hanken = Hanken_Grotesk({
   variable: '--font-hanken',
 });
 
-
-
 export const metadata: Metadata = {
   title: 'Notus — Executive Precision',
   description: 'Enterprise note-taking, calendar & canvas application',
@@ -26,7 +24,7 @@ export default async function RootLayout({
   const session = await auth();
 
   return (
-    <html lang="th" className={`${hanken.variable} h-full antialiased`}>
+    <html lang="en" className={hanken.variable}>
       <head>
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
       </head>
@@ -36,3 +34,5 @@ export default async function RootLayout({
     </html>
   );
 }
+
+export const runtime = 'edge';
