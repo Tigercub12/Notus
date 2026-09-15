@@ -24,7 +24,7 @@ export default function AuthPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password, full_name: fullName }),
         });
-        const data = await res.json();
+        const data = (await res.json()) as any;
         if (!res.ok) {
           setError(data.error || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
           setLoading(false);

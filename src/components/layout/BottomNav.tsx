@@ -1,13 +1,28 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { signOut } from 'next-auth/react';
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const router = useRouter();
   const [showMenu, setShowMenu] = useState(false);
+
+  const handleNewNote = async () => {
+    try {
+      const res = await fetch('/api/notes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: '', content: '' })
+      });
+      if (res.ok) {
+        const note = (await res.json()) as any;
+        router.push(`/notes/${note.id}`);
+      }
+    } catch (e) {}
+  };
 
   return (
     <>

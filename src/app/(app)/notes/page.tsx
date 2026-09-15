@@ -59,7 +59,7 @@ export default function NotesPage() {
         body: JSON.stringify({ title: '', content: '' })
       });
       if (res.ok) {
-        const note = await res.json();
+        const note = (await res.json()) as any;
         router.push(`/notes/${note.id}`);
       }
     } catch (e) {}
