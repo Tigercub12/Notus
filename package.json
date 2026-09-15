@@ -44,5 +44,10 @@
     "tailwindcss": "^4",
     "typescript": "^5",
     "wrangler": "^4.131.2"
+  },
+  "overrides": {
+    "@cloudflare/next-on-pages": {
+      "next": "$next"
+    }
   }
 }
