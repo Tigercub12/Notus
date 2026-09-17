@@ -9,7 +9,7 @@ import { verifyPassword } from "@/lib/auth/password";
 import { getRequestContext } from "@cloudflare/next-on-pages";
 
 export const { handlers, signIn, signOut, auth } = NextAuth(async (req) => {
-  let secret = "dummy_secret_for_build";
+  let secret = "dummy_secret_for_build_must_be_32_characters_long_minimum!";
   let googleClientId = "";
   let googleClientSecret = "";
   
@@ -28,6 +28,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth(async (req) => {
     }
   } catch (e) {
     // getRequestContext might throw outside of a request (e.g., at build time)
+  }
+
+  // Force secret to be at least 32 characters to prevent NextAuth InvalidSecret error
+  if (!secret || secret.length < 32) {
+    secret = (secret || "") + "fallback_secret_padding_must_be_32_chars_minimum!";
   }
 
   return {
