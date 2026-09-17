@@ -4,8 +4,8 @@ import * as schema from './schema';
 
 export function getDb() {
   const ctx = getRequestContext();
-  if (!ctx.env.DB) {
-    throw new Error('D1 Database binding not found in environment');
+  if (!ctx || !ctx.env || !ctx.env.DB) {
+    throw new Error('D1 Database binding not found in environment or getRequestContext returned undefined');
   }
   return drizzle(ctx.env.DB, { schema });
 }

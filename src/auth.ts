@@ -25,18 +25,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        const db = getDb();
-        const user = await db.select().from(users).where(eq(users.email, credentials.email as string)).get();
+        try {
+          const db = getDb();
+          const user = await db.select().from(users).where(eq(users.email, credentials.email as string)).get();
 
-        if (user && user.password_hash) {
-          const isValid = await verifyPassword(credentials.password as string, user.password_hash);
-          if (isValid) {
-            return {
-              id: user.id,
-              name: user.full_name,
-              email: user.email,
-            };
+          if (user && user.password_hash) {
+            const isValid = await verifyPassword(credentials.password as string, user.password_hash);
+            if (isValid) {
+              return {
+                id: user.id,
+                name: user.full_name,
+                email: user.email,
+              };
+            }
           }
+        } catch (error) {
+          console.error("Authorize error:", error);
+          // Return null instead of throwing to avoid NextAuth crash on Edge
         }
         
         return null;
@@ -93,6 +98,5 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
     signIn: '/login',
   },
-  secret: typeof process !== 'undefined' ? process.env.AUTH_SECRET : "dummy_secret_for_build",
   trustHost: true,
 });
