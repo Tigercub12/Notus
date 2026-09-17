@@ -35,7 +35,7 @@ export default function Sidebar() {
   };
 
   return (
-    <nav className="hidden md:flex flex-col h-full w-[280px] bg-[#f8f9ff] border-r border-[#c4c5d5] shrink-0 z-10 fixed left-0 top-0 pb-4">
+    <nav className="hidden md:flex flex-col h-full w-[280px] bg-[#f8f9ff] border-r border-[#c4c5d5] shrink-0 z-10 pb-4">
       {/* Header */}
       <div className="h-16 flex items-center px-6 border-b border-[#c4c5d5] mb-4">
         <span className="text-xl font-bold text-[#00288e]">Notus</span>
